@@ -9,7 +9,7 @@ type Link struct {
 }
 
 type LinkUseCase interface {
-	Create(ctx context.Context, link Link) error
+	Create(ctx context.Context, link string) (string, error)
 	Get(ctx context.Context, h string) (*Link, error)
 	Delete(ctx context.Context, link Link) error
 }
