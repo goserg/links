@@ -2,6 +2,9 @@ package http
 
 import (
 	"net/http"
+	"net/url"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/goserg/links/domain"
 	"github.com/labstack/echo/v4"
@@ -33,7 +36,7 @@ func (h *Handler) Get(c echo.Context) error {
 			Err: err.Error(),
 		})
 	}
-	return c.Redirect(http.StatusSeeOther, "http://"+link.URL)
+	return c.Redirect(http.StatusSeeOther, link.URL.String())
 }
 
 type Link struct {
@@ -47,10 +50,17 @@ func (h *Handler) Create(c echo.Context) error {
 		return err
 	}
 	ctx := c.Request().Context()
-
-	hash, err := h.useCase.Create(ctx, link.Url)
+	URL, err := url.Parse(link.Url)
 	if err != nil {
-		// todo log
+		logrus.Error(err)
+		return err
+	}
+	if URL.Scheme == "" {
+		URL.Scheme = "http"
+	}
+	hash, err := h.useCase.Create(ctx, *URL)
+	if err != nil {
+		logrus.Error(err)
 		return err
 	}
 	return c.String(http.StatusOK, hash)

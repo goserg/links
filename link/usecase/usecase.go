@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"errors"
+	"net/url"
 
 	"github.com/goserg/links/domain"
 )
@@ -20,7 +21,7 @@ func New(db domain.LinkRepository) domain.LinkUseCase {
 	return &us
 }
 
-func (u UseCase) Create(ctx context.Context, url string) (string, error) {
+func (u UseCase) Create(ctx context.Context, url url.URL) (string, error) {
 	h := generateHash(url)
 	for i := 1; i < len(h); i++ {
 		currentHash := h[:i]
@@ -43,9 +44,9 @@ func (u UseCase) Create(ctx context.Context, url string) (string, error) {
 	return "", errors.New("internal server error")
 }
 
-func generateHash(s string) string {
+func generateHash(s url.URL) string {
 	hasher := sha256.New()
-	hasher.Write([]byte(s + salt))
+	hasher.Write([]byte(s.String() + salt))
 	h := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
 	return h
 }

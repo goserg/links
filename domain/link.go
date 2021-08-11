@@ -1,15 +1,18 @@
 package domain
 
-import "context"
+import (
+	"context"
+	"net/url"
+)
 
 type Link struct {
 	ID   int
 	Hash string
-	URL  string
+	URL  url.URL
 }
 
 type LinkUseCase interface {
-	Create(ctx context.Context, link string) (string, error)
+	Create(ctx context.Context, link url.URL) (string, error)
 	Get(ctx context.Context, h string) (*Link, error)
 	Delete(ctx context.Context, link Link) error
 }

@@ -3,17 +3,18 @@ package inmemory
 import (
 	"context"
 	"errors"
+	"net/url"
 
 	"github.com/goserg/links/domain"
 )
 
 type Repository struct {
-	storage map[string]string
+	storage map[string]url.URL
 }
 
 func New() domain.LinkRepository {
 	r := Repository{
-		storage: make(map[string]string),
+		storage: make(map[string]url.URL),
 	}
 	return &r
 }
@@ -28,13 +29,13 @@ func (r Repository) Create(_ context.Context, link domain.Link) error {
 }
 
 func (r Repository) Get(_ context.Context, h string) (*domain.Link, error) {
-	url, exist := r.storage[h]
+	URL, exist := r.storage[h]
 	if !exist {
 		return nil, errors.New("can not find link with hash = " + h)
 	}
 	return &domain.Link{
 		Hash: h,
-		URL:  url,
+		URL:  URL,
 	}, nil
 }
 
