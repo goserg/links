@@ -1,6 +1,7 @@
 package main
 
 import (
+	linkHttpDelivery "github.com/goserg/links/link/delivery/http"
 	inmemoryLinkRepo "github.com/goserg/links/link/repository/inmemory"
 	linkUC "github.com/goserg/links/link/usecase"
 
@@ -14,7 +15,9 @@ func main() {
 	e := echo.New()
 
 	linkRepo := inmemoryLinkRepo.New()
-	linkUC.New(linkRepo)
+	linkUseCase := linkUC.New(linkRepo)
+
+	linkHttpDelivery.Register(e, linkUseCase)
 
 	logrus.Fatal(e.Start(":8080"))
 }
