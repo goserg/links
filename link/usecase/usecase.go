@@ -56,6 +56,10 @@ func (u UseCase) Create(ctx context.Context, url url.URL) (string, error) {
 	return "", errors.New("internal server error")
 }
 
+/*
+sha256 chosen here since it's twice as long as the md5 hash, although it's twice as slow.
+See benchmark test in /bench folder.
+*/
 func generateHash(s url.URL) string {
 	hasher := sha256.New()
 	hasher.Write([]byte(s.String() + salt))
