@@ -21,6 +21,18 @@ func New(db domain.LinkRepository) domain.LinkUseCase {
 	return &us
 }
 
+/*
+Create
+Creating hash from url, then trying its first letter as current hash.
+If url stored with current hash is equal to request url - return current hash, otherwise try first two letters and so on.
+When an unused hash is - save it and return the current hash.
+
+My goal was to create algorithm that was relatively fast and generated as short a hash as possible.
+The drawback is the multiple storage calls per url save.
+
+Possible improvement if storage calls will slow things down:
+  make one storage request with all the hashes, and then process the result here.
+*/
 func (u UseCase) Create(ctx context.Context, url url.URL) (string, error) {
 	h := generateHash(url)
 	for i := 1; i < len(h); i++ {
