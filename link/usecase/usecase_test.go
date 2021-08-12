@@ -28,6 +28,34 @@ func TestUseCase_Create(t *testing.T) {
 	assert.Equal(t, h[:1], h)
 }
 
+func TestUseCase_Create_Exists(t *testing.T) {
+	repoMock := new(mocks.Repository)
+	uc := New(repoMock)
+
+	u := url.URL{Path: "link"}
+	h := generateHash(u)
+	repoMock.On("Get", mock.Anything, h[:1]).Return(&domain.Link{URL: u, Hash: h[:1]}, nil)
+	h, err := uc.Create(context.Background(), u)
+	assert.NoError(t, err)
+	assert.Equal(t, h[:1], h)
+}
+
+func TestUseCase_Create_HashFail(t *testing.T) {
+	repoMock := new(mocks.Repository)
+	uc := New(repoMock)
+
+	u := url.URL{Path: "link"}
+	h := generateHash(u)
+	for i := 0; i < len(h); i++ {
+		repoMock.On("Get", mock.Anything, h[:i]).Return(&domain.Link{URL: url.URL{Path: "wrong path"}}, nil)
+	}
+	h, err := uc.Create(context.Background(), u)
+	if assert.Error(t, err) {
+		assert.Equal(t, err, errors.New("internal server error"))
+	}
+
+}
+
 func TestUseCase_Get(t *testing.T) {
 	repoMock := new(mocks.Repository)
 	uc := New(repoMock)
