@@ -49,7 +49,7 @@ func (u UseCase) Create(ctx context.Context, url url.URL) (string, error) {
 			}
 			return currentHash, nil
 		}
-		if link.URL == url {
+		if link.URL.String() == url.String() {
 			return link.Hash, nil
 		}
 	}
