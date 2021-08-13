@@ -1,3 +1,5 @@
+//+build inmemory
+
 package main
 
 import (
@@ -10,7 +12,7 @@ import (
 )
 
 func main() {
-	logrus.Println("starting app")
+	logrus.Println("starting app with inmemory storage")
 
 	e := echo.New()
 
