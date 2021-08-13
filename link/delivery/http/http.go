@@ -18,6 +18,7 @@ func Register(e *echo.Echo, useCase domain.LinkUseCase) {
 	handler := Handler{useCase: useCase}
 
 	e.POST("/create", handler.Create)
+	e.GET("/create/:u", handler.Create)
 	e.GET("/:h", handler.Get)
 }
 
@@ -44,17 +45,25 @@ type Link struct {
 }
 
 func (h *Handler) Create(c echo.Context) error {
-	var link Link
-	if err := c.Bind(&link); err != nil {
-		// todo log
-		return err
+	var URL *url.URL
+	var err error
+
+	u := c.Param("u")
+	if u != "" {
+		URL, err = url.Parse(u)
+	} else {
+		var link Link
+		if err := c.Bind(&link); err != nil {
+			logrus.Error(err)
+			return err
+		}
+		URL, err = url.Parse(link.Url)
 	}
-	ctx := c.Request().Context()
-	URL, err := url.Parse(link.Url)
 	if err != nil {
 		logrus.Error(err)
 		return err
 	}
+	ctx := c.Request().Context()
 	if URL.Scheme == "" {
 		URL.Scheme = "http"
 	}
