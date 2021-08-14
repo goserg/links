@@ -15,6 +15,7 @@ func main() {
 	logrus.Println("starting app with inmemory storage")
 
 	e := echo.New()
+	e.HideBanner = true
 
 	linkRepo := inmemoryLinkRepo.New()
 	linkUseCase := linkUC.New(linkRepo)
