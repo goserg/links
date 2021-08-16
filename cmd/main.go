@@ -1,23 +1,24 @@
-//+build inmemory
-
 package main
 
 import (
 	linkHttpDelivery "github.com/goserg/links/link/delivery/http"
-	inmemoryLinkRepo "github.com/goserg/links/link/repository/inmemory"
 	linkUC "github.com/goserg/links/link/usecase"
 
 	"github.com/labstack/echo/v4"
+	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	logrus.Println("starting app with inmemory storage")
-
 	e := echo.New()
 	e.HideBanner = true
 
-	linkRepo := inmemoryLinkRepo.New()
+	linkRepo, closeFunc, err := databaseInit()
+	if err != nil {
+		panic(err)
+	}
+	defer closeFunc()
+
 	linkUseCase := linkUC.New(linkRepo)
 
 	linkHttpDelivery.Register(e, linkUseCase)
