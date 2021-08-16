@@ -10,9 +10,6 @@ import (
 )
 
 func main() {
-	e := echo.New()
-	e.HideBanner = true
-
 	linkRepo, closeFunc, err := databaseInit()
 	if err != nil {
 		panic(err)
@@ -21,7 +18,8 @@ func main() {
 
 	linkUseCase := linkUC.New(linkRepo)
 
+	e := echo.New()
+	e.HideBanner = true
 	linkHttpDelivery.Register(e, linkUseCase)
-
 	logrus.Fatal(e.Start(":8080"))
 }
