@@ -9,3 +9,7 @@ build-inmemory:
 .PHONY:run
 run:
 	./bin/links
+
+.PHONY:test
+test:
+	go test -tags=postgres -v ./...
