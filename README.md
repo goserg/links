@@ -37,3 +37,14 @@ Response: `< link >`
 Request: `/< link >`
 
 Response: redirect to the stored url.
+
+## Example of use
+- GET Request to the `http://localhost:8080/create/google.com`
+
+   Response: "R"
+
+
+- GET Request to the `http://localhost:8080/R`
+
+   Response: redirect to the `http://google.com`
+
