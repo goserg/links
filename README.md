@@ -6,3 +6,8 @@ Golang URL Shortener
 ```
 docker-compose up
 ```
+### Dev version with no database:
+```
+make build-inmemory
+make run
+```
